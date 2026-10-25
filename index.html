@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de penas</title>
+  <meta name="description" content="Calculadora de penas del Código Penal español: marcos penales, grados, circunstancias, concursos, límites de cumplimiento y suspensión.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f3a5f'/%3E%3Cpath d='M32 12v38M18 22h28M14 36l6-14 6 14a6 6 0 0 1-12 0zM38 36l6-14 6 14a6 6 0 0 1-12 0zM22 50h20' stroke='%23f4efe6' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="envoltura cabecera__fila">
+      <div>
+        <p class="sobretitulo">Código Penal · LO 10/1995 · texto consolidado vigente</p>
+        <h1>Calculadora de penas</h1>
+        <p class="subtitulo">Delito a delito: marco penal, grados de ejecución y participación, circunstancias del art. 66, continuidad, concursos, límites del art. 76, prescripción, suspensión y libertad condicional.</p>
+      </div>
+      <div class="cabecera__acciones">
+        <button type="button" class="boton boton--fantasma" id="btn-tema" aria-label="Cambiar tema">◐ Tema</button>
+        <button type="button" class="boton boton--fantasma" id="btn-imprimir">Imprimir informe</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="envoltura disposicion">
+    <section class="columna-principal" aria-label="Delitos">
+      <div class="aviso-legal">
+        <strong>Herramienta orientativa.</strong> Los marcos penales proceden del texto consolidado del BOE (BOE-A-1995-25444, incluida la LO 1/2026). La individualización final corresponde al tribunal; contraste siempre con el texto vigente y la jurisprudencia aplicable. El cómputo usa meses de 30 días y años de 360 (art. 50.4).
+      </div>
+
+      <div id="lista-delitos"></div>
+
+      <button type="button" class="boton boton--primario boton--ancho" id="btn-anadir">+ Añadir delito</button>
+
+      <details class="tarjeta herramienta" id="herramienta-grados">
+        <summary><h2>Calculadora rápida de grados (art. 70)</h2></summary>
+        <div class="rejilla rejilla--3">
+          <label>Tipo de pena
+            <select id="g-tipo">
+              <option value="prision">Prisión</option>
+              <option value="multa">Multa (días-multa)</option>
+              <option value="inhab_especial">Inhabilitación especial</option>
+              <option value="priv_conducir">Privación del permiso de conducir</option>
+              <option value="tbc">Trabajos en beneficio de la comunidad</option>
+            </select>
+          </label>
+          <fieldset class="duracion"><legend>Mínimo</legend>
+            <input id="g-min-a" type="number" min="0" value="1" aria-label="años"><span>a</span>
+            <input id="g-min-m" type="number" min="0" value="0" aria-label="meses"><span>m</span>
+            <input id="g-min-d" type="number" min="0" value="0" aria-label="días"><span>d</span>
+          </fieldset>
+          <fieldset class="duracion"><legend>Máximo</legend>
+            <input id="g-max-a" type="number" min="0" value="4" aria-label="años"><span>a</span>
+            <input id="g-max-m" type="number" min="0" value="0" aria-label="meses"><span>m</span>
+            <input id="g-max-d" type="number" min="0" value="0" aria-label="días"><span>d</span>
+          </fieldset>
+        </div>
+        <table class="tabla" id="g-resultado"></table>
+      </details>
+    </section>
+
+    <aside class="columna-resumen" aria-label="Resultado global">
+      <div class="tarjeta resumen" id="resumen">
+        <h2>Resultado global</h2>
+        <div class="rejilla rejilla--2">
+          <label>Relación entre los delitos
+            <select id="c-concurso">
+              <option value="real">Concurso real (arts. 73, 75 y 76)</option>
+              <option value="ideal">Concurso ideal: un hecho, varios delitos (art. 77.2)</option>
+              <option value="medial">Concurso medial: uno medio del otro (art. 77.3)</option>
+            </select>
+          </label>
+          <label>Inicio de cumplimiento
+            <input type="date" id="c-fecha">
+          </label>
+          <label>Abono de prisión preventiva (días, art. 58)
+            <input type="number" id="c-abono" min="0" value="0">
+          </label>
+        </div>
+        <fieldset class="casillas">
+          <legend>Circunstancias del penado</legend>
+          <label><input type="checkbox" id="c-primario" checked> Delinque por primera vez (art. 80.2.1ª)</label>
+          <label><input type="checkbox" id="c-respcivil" checked> Ha satisfecho o asume la responsabilidad civil y el decomiso</label>
+          <label><input type="checkbox" id="c-habitual"> Reo habitual (art. 94)</label>
+          <label><input type="checkbox" id="c-droga"> Delinquió por dependencia y está en tratamiento certificado (art. 80.5)</label>
+          <label><input type="checkbox" id="c-enfermo"> Enfermedad muy grave con padecimientos incurables (art. 80.4)</label>
+          <label><input type="checkbox" id="c-extranjero"> Ciudadano extranjero (art. 89)</label>
+          <label><input type="checkbox" id="c-terrorismo"> Delitos de terrorismo (arts. 76.1.d y 90.8)</label>
+        </fieldset>
+        <div id="resumen-salida"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="pie envoltura">
+    <p>Fuente normativa: Ley Orgánica 10/1995, de 23 de noviembre, del Código Penal, texto consolidado (BOE-A-1995-25444). Esta calculadora no sustituye el asesoramiento jurídico profesional.</p>
+  </footer>
+
+  <template id="tpl-delito">
+    <article class="tarjeta delito">
+      <header class="delito__cabecera">
+        <h2 class="delito__titulo">Delito <span class="delito__num"></span></h2>
+        <div class="delito__acciones">
+          <button type="button" class="boton boton--mini" data-accion="duplicar">Duplicar</button>
+          <button type="button" class="boton boton--mini boton--peligro" data-accion="eliminar">Eliminar</button>
+        </div>
+      </header>
+
+      <div class="rejilla rejilla--2">
+        <label>Buscar delito
+          <input type="search" data-k="buscar" placeholder="p. ej. robo, 242, violación, alcohol…">
+        </label>
+        <label>Delito
+          <select data-k="delito"></select>
+        </label>
+      </div>
+      <label>Modalidad (tipo básico, agravado o atenuado)
+        <select data-k="modalidad"></select>
+      </label>
+      <div class="alternativas" data-zona="alternativas"></div>
+
+      <details class="bloque" open>
+        <summary>Ejecución y participación</summary>
+        <div class="rejilla rejilla--3">
+          <label>Grado de ejecución
+            <select data-k="ejecucion">
+              <option value="consumado">Consumado</option>
+              <option value="tentativa">Tentativa (arts. 16 y 62)</option>
+              <option value="preparatorio">Conspiración, proposición o provocación (arts. 17-18)</option>
+            </select>
+          </label>
+          <label data-mostrar="grados-ejecucion">Rebaja por ejecución
+            <select data-k="gradosEjecucion">
+              <option value="1">Un grado (tentativa acabada / mayor peligro)</option>
+              <option value="2">Dos grados (tentativa inacabada / menor peligro)</option>
+            </select>
+          </label>
+          <label>Participación
+            <select data-k="participacion">
+              <option value="autor">Autor (art. 28)</option>
+              <option value="inductor">Inductor (art. 28.a)</option>
+              <option value="cooperador">Cooperador necesario (art. 28.b)</option>
+              <option value="complice">Cómplice (arts. 29 y 63)</option>
+            </select>
+          </label>
+        </div>
+        <label class="casilla" data-mostrar="extraneus"><input type="checkbox" data-k="extraneus"> Extraneus en delito especial: rebaja de un grado (art. 65.3, facultativa)</label>
+        <div class="rejilla rejilla--2">
+          <label>Eximente incompleta (arts. 21.1ª y 68)
+            <select data-k="eximenteIncompleta">
+              <option value="0">No concurre</option>
+              <option value="1">Sí: inferior en un grado</option>
+              <option value="2">Sí: inferior en dos grados</option>
+            </select>
+          </label>
+          <label>Error de prohibición vencible (art. 14.3)
+            <select data-k="errorProhibicion">
+              <option value="0">No concurre</option>
+              <option value="1">Sí: inferior en un grado</option>
+              <option value="2">Sí: inferior en dos grados</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <details class="bloque">
+        <summary>Circunstancias atenuantes y agravantes <span class="contador" data-zona="contador"></span></summary>
+        <div class="rejilla rejilla--2">
+          <fieldset class="casillas"><legend>Atenuantes (art. 21)</legend><div data-zona="atenuantes"></div></fieldset>
+          <fieldset class="casillas"><legend>Agravantes (art. 22)</legend><div data-zona="agravantes"></div></fieldset>
+        </div>
+        <div class="rejilla rejilla--2">
+          <label>Mixta de parentesco (art. 23)
+            <select data-k="mixta">
+              <option value="no">No se aprecia</option>
+              <option value="atenuante">Como atenuante</option>
+              <option value="agravante">Como agravante</option>
+            </select>
+          </label>
+          <label>Rebaja con varias atenuantes o una muy cualificada (art. 66.1.2ª)
+            <select data-k="gradosRegla2">
+              <option value="1">Inferior en un grado</option>
+              <option value="2">Inferior en dos grados</option>
+            </select>
+          </label>
+          <label>Si concurren atenuantes y agravantes (art. 66.1.7ª)
+            <select data-k="compensacion">
+              <option value="auto">Compensación automática orientativa</option>
+              <option value="neutral">Se compensan: toda la extensión</option>
+              <option value="atenuacion">Predomina la atenuación: mitad inferior</option>
+              <option value="cualif_atenuacion">Fundamento cualificado de atenuación: inferior en grado</option>
+              <option value="agravacion">Fundamento cualificado de agravación: mitad superior</option>
+            </select>
+          </label>
+        </div>
+        <label class="casilla"><input type="checkbox" data-k="multirreincidencia"> Multirreincidencia: tres o más condenas por delitos del mismo título y naturaleza (art. 66.1.5ª)</label>
+        <label class="casilla"><input type="checkbox" data-k="facultativas" checked> Aplicar las agravaciones facultativas de las reglas 4ª y 5ª del art. 66.1</label>
+      </details>
+
+      <details class="bloque">
+        <summary>Delito continuado (art. 74)</summary>
+        <label>Continuidad delictiva
+          <select data-k="continuado">
+            <option value="no">No hay continuidad</option>
+            <option value="74.1">Delito continuado (art. 74.1)</option>
+            <option value="74.2-total">Continuado patrimonial: pena por el perjuicio total (art. 74.2)</option>
+            <option value="74.2-masa1">Delito masa: superior en un grado (art. 74.2)</option>
+            <option value="74.2-masa2">Delito masa: superior en dos grados (art. 74.2)</option>
+          </select>
+        </label>
+      </details>
+
+      <section class="salida" data-zona="salida"></section>
+
+      <details class="bloque" open>
+        <summary>Pena concreta que se impone</summary>
+        <div data-zona="concreta"></div>
+        <div data-zona="multa"></div>
+      </details>
+
+      <section class="salida salida--efectos" data-zona="efectos"></section>
+    </article>
+  </template>
+
+  <script src="motor.js"></script>
+  <script src="delitos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

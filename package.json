@@ -1,0 +1,15 @@
+{
+  "name": "calculadora-penas",
+  "version": "1.0.0",
+  "description": "Calculadora de penas del Código Penal español: marcos penales, grados, circunstancias, concursos, límites de cumplimiento y suspensión.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["derecho penal", "codigo penal", "calculadora", "penas", "espana"],
+  "license": "MIT"
+}
