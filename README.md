@@ -31,6 +31,7 @@ El cómputo usa meses de 30 días y años de 360 (art. 50.4). Es una herramienta
 | `motor.js` | Motor de cálculo penológico (funciona en navegador y en Node) |
 | `delitos.js` | Catálogo de delitos y marcos penales |
 | `server.js` | Servidor HTTP sin dependencias |
+| `mcp.js` | Conector MCP para Claude (endpoint `/mcp`) |
 | `test.js` | Pruebas del motor (`npm test`) |
 | `package.json` | Scripts y versión de Node |
 | `render.yaml` | Configuración para Render (Blueprint) |
@@ -80,6 +81,17 @@ También puedes usar «Add file → Upload files» en la web de GitHub y arrastr
 3. Pulsa **Create Web Service**. En uno o dos minutos tendrás la URL `https://calculadora-penas.onrender.com` (o similar).
 
 Render asigna el puerto con la variable `PORT`, que el servidor ya respeta. En el plan gratuito el servicio se duerme tras 15 minutos sin visitas y tarda unos segundos en despertar.
+
+## Usarla como conector en Claude
+
+El servidor incluye un endpoint MCP (Model Context Protocol, transporte Streamable HTTP) en `/mcp`, con cuatro herramientas:
+
+- `buscar_delitos`: busca delitos y devuelve el identificador de cada modalidad.
+- `calcular_pena`: individualiza la pena de un delito con todas las variables.
+- `calcular_condena`: varios delitos, concursos, art. 76, suspensión y libertad condicional.
+- `grados_pena`: pena superior e inferior en grado y mitades de cualquier marco.
+
+Para añadirlo en claude.ai: **Ajustes → Conectores → Añadir conector personalizado**, con nombre «Calculadora de penas» y URL `https://TU-APP.onrender.com/mcp`. No requiere autenticación. Después, actívalo en el chat desde el menú de herramientas.
 
 ## Ampliar el catálogo
 

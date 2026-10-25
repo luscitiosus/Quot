@@ -4,6 +4,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { manejarMcp } = require('./mcp');
 
 const PORT = process.env.PORT || 3000;
 const RAIZ = __dirname;
@@ -27,6 +28,9 @@ const CABECERAS = {
 
 const servidor = http.createServer((req, res) => {
   const ruta = decodeURIComponent((req.url || '/').split('?')[0]);
+
+  // Conector MCP para Claude (Streamable HTTP)
+  if (ruta === '/mcp' || ruta === '/mcp/') return manejarMcp(req, res);
 
   if (ruta === '/health' || ruta === '/salud') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
